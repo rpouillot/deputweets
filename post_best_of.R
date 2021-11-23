@@ -15,9 +15,11 @@ library("webshot")
 
 
 if(Sys.info()[1] == "Windows") {
-  setwd("C:/Users/rpoui/OneDrive/TwitterApp/")
+  setwd("C:/Users/rpoui/OneDrive/Twitter/")
 } else { #Linux
   setwd("//home//ubuntu//AppDeputes")
+  token <- readRDS("tokenDeputweets.rds")
+  
 }
 
 sink("checkPost",append = TRUE)
@@ -142,9 +144,8 @@ if(hour(with_tz(Sys.time(), tzone = "Europe/Paris")) == 0){
   #   access_token = access_tokenD,
   #   access_secret = access_token_secretD,
   #   set_renv = FALSE)
-  # Deal with the token
   
-  token <- readRDS("tokenDeputweets.rds")
+  # token <- get_token()
 
   post_tweet(status= paste(txt, best$status_url), token = token)
   post_tweet(status= txt2, media = "webshot.png", token = token) 
