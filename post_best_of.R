@@ -15,14 +15,14 @@ library("webshot")
 
 
 if(Sys.info()[1] == "Windows") {
-  setwd("C:/Users/rpoui/OneDrive/Twitter/")
+  setwd("C:/Users/PouillotRegis/OneDrive/ShinyApps/Twitter/deputweets/")
 } else { #Linux
   setwd("//home//ubuntu//AppDeputes")
   token <- readRDS("tokenDeputweets.rds")
   
 }
 
-sink("checkPost",append = TRUE)
+#sink("checkPost",append = TRUE)
 
 
 cat("newHour\n")
@@ -110,6 +110,12 @@ if(hour(with_tz(Sys.time(), tzone = "Europe/Paris")) == 0){
     engagement = paste0(nn*round(engagement)," / ",nn," = ",round(engagement)),
   ) 
 
+  theBest <- baseGraph %>% slice(1) %>% pull(screen_name)
+  theBestTweets <- selectedTweets %>%
+    filter(screen_name == theBest) %>%
+    mutate(engagement = retweet_count * 2 + favorite_count) %>%
+    arrange(desc(engagement))
+  
   graph <- baseGraph %>%
     select(profile_image, Nom, engagement, bar) %>%
     kbl(
@@ -147,8 +153,21 @@ if(hour(with_tz(Sys.time(), tzone = "Europe/Paris")) == 0){
   
   # token <- get_token()
 
+  # Best Of
   post_tweet(status= paste(txt, best$status_url), token = token)
+  
+  # 10 best of
   post_tweet(status= txt2, media = "webshot.png", token = token) 
+  # And the tweets
+  n <- nrow(theBestTweets)
+  for(i in 1:n){
+    Sys.sleep(10) # Just in case...
+    my_timeline <- get_timeline(rtweet:::home_user())
+    reply_id <- my_timeline$status_id[1]
+    post_tweet(paste0("Tweets du #1 (",i,"/",n,") : ",
+                      theBestTweets$status_url[i]),
+             in_reply_to_status_id = reply_id)
+  }
 
   } else cat("It is not the right Time/n")
 
