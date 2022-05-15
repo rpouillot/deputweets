@@ -15,7 +15,7 @@ library("webshot")
 
 
 if(Sys.info()[1] == "Windows") {
-  setwd("C:/Users/PouillotRegis/OneDrive/ShinyApps/Twitter/deputweets/")
+  setwd("C:/Users/rpoui/OneDrive/ShinyApps/Twitter/deputweets/")
 } else { #Linux
   setwd("//home//ubuntu//AppDeputes")
   token <- readRDS("tokenDeputweets.rds")
@@ -27,12 +27,12 @@ if(Sys.info()[1] == "Windows") {
 
 cat("newHour\n")
 print(hour(with_tz(Sys.time(), tzone = "Europe/Paris")))
-print(hour(with_tz(Sys.time(), tzone = "Europe/Paris")) == 0)
+print(hour(with_tz(Sys.time(), tzone = "Europe/Paris")) == 3)
 
 
 # Tweet the best of after midnight (Paris)
 
-if(hour(with_tz(Sys.time(), tzone = "Europe/Paris")) == 0){
+if(hour(with_tz(Sys.time(), tzone = "Europe/Paris")) == 3){
   
   ##################################
   # Functions
@@ -164,7 +164,7 @@ if(hour(with_tz(Sys.time(), tzone = "Europe/Paris")) == 0){
     Sys.sleep(10) # Just in case...
     my_timeline <- get_timeline(rtweet:::home_user())
     reply_id <- my_timeline$status_id[1]
-    post_tweet(paste0("Tweets du #1 (",i,"/",n,") : ",
+    post_tweet(paste0("Tweets du #1 @",theBest," (",i,"/",n,") : ",
                       theBestTweets$status_url[i]),
              in_reply_to_status_id = reply_id)
   }
